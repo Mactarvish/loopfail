@@ -1,13 +1,19 @@
-import os
-import sys
+import subprocess
 import time
+import sys
 
-if __name__ == '__main__':
+# 要执行的命令
+command = ' '.join(sys.argv[1:])
+
+while True:
     try:
-        cmd = ' '.join(sys.argv[1:])
-        while 0 != os.system(cmd):
-            print("Error, retrying...")
-            time.sleep(2)
-        print("Done")
+        # 执行命令
+        result = subprocess.run(command, shell=True, check=True)
+        print("命令成功执行:", result)
+        break  # 如果命令成功，退出循环
+    except subprocess.CalledProcessError:
+        print("命令执行失败，正在重试...")
+        time.sleep(1)  # 等待一秒再重试
     except KeyboardInterrupt:
-        exit(-1)
+        print("用户中断，程序退出。")
+        break  # 用户按下 Ctrl+C，退出循环
